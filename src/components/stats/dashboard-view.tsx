@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { FolderGit2, Plus } from "lucide-react";
 import { useProjectStats } from "../../hooks/queries/use-project-stats";
+import { lastActivity } from "../../lib/project-list";
 import { ROUTES } from "../../lib/routes";
-import type { ProjectWithScore } from "../../types/project";
 import { EmptyState } from "../common/empty-state";
 import { ErrorState } from "../common/error-state";
 import { ScoreHistoryChart } from "../charts/score-history-chart";
@@ -13,14 +13,6 @@ import { Skeleton } from "../ui/skeleton";
 import { ScoreSummaryCards } from "./score-summary-cards";
 
 const RECENT_PROJECT_COUNT = 6;
-
-/** Most recent activity of a project: its last review, or its last edit */
-function lastActivity(project: ProjectWithScore): number {
-  return Math.max(
-    project.lastReviewAt ? new Date(project.lastReviewAt).getTime() : 0,
-    new Date(project.updatedAt).getTime(),
-  );
-}
 
 function NewProjectButton() {
   return (
