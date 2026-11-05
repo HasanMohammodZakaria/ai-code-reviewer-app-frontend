@@ -6,7 +6,7 @@ import { getFieldErrors, normalizeError } from "../../api/errors";
 import { useAuth } from "../../hooks/use-auth";
 import { ROUTES, getHomePath } from "../../lib/routes";
 import { loginSchema, type LoginValues } from "../../lib/schemas/auth";
-import { FormError, TextField } from "../common/form-controls";
+import { FormError, PasswordField, TextField } from "../common/form-controls";
 import { Button } from "../ui/button";
 
 const RATE_LIMIT_COOLDOWN_MS = 60_000;
@@ -81,9 +81,8 @@ export function LoginForm() {
         {...register("email")}
       />
 
-      <TextField
+      <PasswordField
         label="Password"
-        type="password"
         autoComplete="current-password"
         error={errors.password?.message}
         {...register("password")}
