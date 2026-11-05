@@ -5,6 +5,7 @@ import { AppShell } from "../components/layout/app-shell";
 import { DashboardPage } from "../pages/dashboard-page";
 import { ForgotPasswordPage } from "../pages/forgot-password-page";
 import { LoginPage } from "../pages/login-page";
+import { NewProjectPage } from "../pages/new-project-page";
 import { ProjectsPage } from "../pages/projects-page";
 import { RegisterPage } from "../pages/register-page";
 import { ResetPasswordPage } from "../pages/reset-password-page";
@@ -35,10 +36,7 @@ export const router = createBrowserRouter([
           // Any logged-in user
           { path: "/dashboard", element: <DashboardPage /> },
           { path: "/projects", element: <ProjectsPage /> },
-          {
-            path: "/projects/new",
-            element: <PlaceholderPage title="New project" />,
-          },
+          { path: "/projects/new", element: <NewProjectPage /> },
           {
             path: "/projects/:id",
             element: <PlaceholderPage title="Project detail" />,
