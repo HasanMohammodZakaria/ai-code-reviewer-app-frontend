@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { HomeRedirect } from "../components/auth/home-redirect";
 import { PlaceholderPage } from "../components/common/placeholder-page";
+import { AppShell } from "../components/layout/app-shell";
 import { ForgotPasswordPage } from "../pages/forgot-password-page";
 import { LoginPage } from "../pages/login-page";
 import { RegisterPage } from "../pages/register-page";
@@ -21,47 +22,60 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // Any logged-in user (the app shell will wrap these later)
+  // Logged-in pages. One shared shell keeps the sidebar mounted when a
+  // teacher moves between teacher pages and shared pages (e.g. Settings).
   {
     element: auth(),
     children: [
-      { path: "/dashboard", element: <PlaceholderPage title="Dashboard" /> },
-      { path: "/projects", element: <PlaceholderPage title="My projects" /> },
       {
-        path: "/projects/new",
-        element: <PlaceholderPage title="New project" />,
-      },
-      {
-        path: "/projects/:id",
-        element: <PlaceholderPage title="Project detail" />,
-      },
-      {
-        path: "/reviews/:id",
-        element: <PlaceholderPage title="Review detail" />,
-      },
-      { path: "/settings", element: <PlaceholderPage title="Settings" /> },
-    ],
-  },
+        element: <AppShell />,
+        children: [
+          // Any logged-in user
+          {
+            path: "/dashboard",
+            element: <PlaceholderPage title="Dashboard" />,
+          },
+          {
+            path: "/projects",
+            element: <PlaceholderPage title="My projects" />,
+          },
+          {
+            path: "/projects/new",
+            element: <PlaceholderPage title="New project" />,
+          },
+          {
+            path: "/projects/:id",
+            element: <PlaceholderPage title="Project detail" />,
+          },
+          {
+            path: "/reviews/:id",
+            element: <PlaceholderPage title="Review detail" />,
+          },
+          { path: "/settings", element: <PlaceholderPage title="Settings" /> },
 
-  // Teachers only
-  {
-    element: auth({ role: "teacher" }),
-    children: [
-      {
-        path: "/teacher",
-        element: <PlaceholderPage title="Teacher overview" />,
-      },
-      {
-        path: "/teacher/students",
-        element: <PlaceholderPage title="Students" />,
-      },
-      {
-        path: "/teacher/students/:id",
-        element: <PlaceholderPage title="Student detail" />,
-      },
-      {
-        path: "/teacher/compare",
-        element: <PlaceholderPage title="Compare" />,
+          // Teachers only
+          {
+            element: auth({ role: "teacher" }),
+            children: [
+              {
+                path: "/teacher",
+                element: <PlaceholderPage title="Teacher overview" />,
+              },
+              {
+                path: "/teacher/students",
+                element: <PlaceholderPage title="Students" />,
+              },
+              {
+                path: "/teacher/students/:id",
+                element: <PlaceholderPage title="Student detail" />,
+              },
+              {
+                path: "/teacher/compare",
+                element: <PlaceholderPage title="Compare" />,
+              },
+            ],
+          },
+        ],
       },
     ],
   },
