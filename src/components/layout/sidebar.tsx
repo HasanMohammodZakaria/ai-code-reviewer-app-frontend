@@ -20,6 +20,8 @@ type NavItem = {
   end?: boolean;
   /** Child paths that belong to another item */
   exclude?: string[];
+  /** Other base paths that also highlight this item, e.g. "/reviews" */
+  include?: string[];
 };
 
 const STUDENT_ITEMS: NavItem[] = [
@@ -34,6 +36,7 @@ const STUDENT_ITEMS: NavItem[] = [
     to: ROUTES.projects,
     icon: FolderOpen,
     exclude: [ROUTES.newProject],
+    include: ["/reviews"],
   },
   { label: "New project", to: ROUTES.newProject, icon: FilePlus2 },
   { label: "Settings", to: ROUTES.settings, icon: Settings },
@@ -51,7 +54,10 @@ function isUnder(pathname: string, base: string): boolean {
 }
 
 function isItemActive(pathname: string, item: NavItem): boolean {
-  const matches = item.end ? pathname === item.to : isUnder(pathname, item.to);
+  const matches = item.end
+    ? pathname === item.to
+    : isUnder(pathname, item.to) ||
+      (item.include ?? []).some((base) => isUnder(pathname, base));
 
   if (!matches) return false;
   return !(item.exclude ?? []).some((path) => isUnder(pathname, path));
