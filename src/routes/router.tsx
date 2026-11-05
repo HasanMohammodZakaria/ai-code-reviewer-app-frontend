@@ -6,6 +6,7 @@ import { ForgotPasswordPage } from "../pages/forgot-password-page";
 import { LoginPage } from "../pages/login-page";
 import { RegisterPage } from "../pages/register-page";
 import { ResetPasswordPage } from "../pages/reset-password-page";
+import { DashboardPage } from "../pages/dashboard-page";
 import { auth, guest } from "./auth";
 
 export const router = createBrowserRouter([
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
           // Any logged-in user
           {
             path: "/dashboard",
-            element: <PlaceholderPage title="Dashboard" />,
+            element: <DashboardPage />,
           },
           {
             path: "/projects",
