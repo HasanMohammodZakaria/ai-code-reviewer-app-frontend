@@ -18,7 +18,8 @@ const DropdownMenuContent = forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "z-50 min-w-48 overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md",
+        "z-50 min-w-48 origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md",
+        "motion-safe:data-[state=open]:animate-menu-in motion-safe:data-[state=closed]:animate-menu-out [animation-fill-mode:forwards]",
         className,
       )}
       {...props}
