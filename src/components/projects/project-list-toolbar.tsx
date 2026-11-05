@@ -9,6 +9,13 @@ import { cn } from "../../lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 /** Typing is sent to the URL only after this pause */
 const SEARCH_DELAY_MS = 250;
@@ -35,7 +42,6 @@ export function ProjectListToolbar({
   className,
 }: ProjectListToolbarProps) {
   const searchId = useId();
-  const sortId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
   /* The field keeps its own text, so typing never waits for the URL update.
@@ -119,30 +125,26 @@ export function ProjectListToolbar({
         ) : null}
       </div>
 
-      <div className="sm:w-52">
-        <Label htmlFor={sortId} className="sr-only">
-          Sort projects
-        </Label>
-        <select
-          id={sortId}
-          value={sort}
-          onChange={(event) => {
-            const value = event.target.value;
-            if (isProjectSort(value)) onSortChange(value);
-          }}
-          className={cn(
-            "h-10 w-full rounded-md border border-input bg-background px-3 text-base text-foreground transition-colors md:h-9 md:text-sm",
-            "focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
-            "dark:scheme-dark",
-          )}
+      <Select
+        value={sort}
+        onValueChange={(value) => {
+          if (isProjectSort(value)) onSortChange(value);
+        }}
+      >
+        <SelectTrigger
+          aria-label="Sort projects"
+          className="sm:w-52 sm:shrink-0"
         >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
           {PROJECT_SORT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
+            <SelectItem key={option.value} value={option.value}>
               {option.label}
-            </option>
+            </SelectItem>
           ))}
-        </select>
-      </div>
+        </SelectContent>
+      </Select>
 
       {hasFilters ? (
         <Button
