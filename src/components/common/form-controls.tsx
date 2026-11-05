@@ -1,6 +1,13 @@
-import { forwardRef, useId, type InputHTMLAttributes } from "react";
-import { CircleAlert } from "lucide-react";
+import {
+  forwardRef,
+  useId,
+  useState,
+  type InputHTMLAttributes,
+  type ReactNode,
+} from "react";
+import { CircleAlert, Eye, EyeOff } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
@@ -10,12 +17,14 @@ type TextFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id"> & {
   error?: string;
   /** Short helper text shown under the input */
   hint?: string;
+  /** Content placed inside the input, at its right edge (e.g. an icon button) */
+  endSlot?: ReactNode;
   id?: string;
 };
 
 /** Label + input + hint + error. className applies to the wrapper. */
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
-  ({ label, error, hint, id, className, ...props }, ref) => {
+  ({ label, error, hint, endSlot, id, className, ...props }, ref) => {
     const generatedId = useId();
     const inputId = id ?? generatedId;
     const hintId = `${inputId}-hint`;
@@ -29,13 +38,21 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     return (
       <div className={cn("space-y-2", className)}>
         <Label htmlFor={inputId}>{label}</Label>
-        <Input
-          ref={ref}
-          id={inputId}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={describedBy}
-          {...props}
-        />
+        <div className="relative">
+          <Input
+            ref={ref}
+            id={inputId}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={describedBy}
+            className={endSlot ? "pr-11" : undefined}
+            {...props}
+          />
+          {endSlot ? (
+            <div className="absolute inset-y-0 right-1 flex items-center">
+              {endSlot}
+            </div>
+          ) : null}
+        </div>
         {hint ? (
           <p id={hintId} className="text-xs text-muted-foreground">
             {hint}
@@ -51,6 +68,38 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   },
 );
 TextField.displayName = "TextField";
+
+type PasswordFieldProps = Omit<TextFieldProps, "type" | "endSlot">;
+
+/** TextField for passwords with a show/hide toggle inside the input */
+export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
+  (props, ref) => {
+    const [visible, setVisible] = useState(false);
+    const toggleLabel = visible ? "Hide password" : "Show password";
+
+    return (
+      <TextField
+        ref={ref}
+        {...props}
+        type={visible ? "text" : "password"}
+        endSlot={
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            onClick={() => setVisible((current) => !current)}
+            aria-label={toggleLabel}
+            title={toggleLabel}
+          >
+            {visible ? <EyeOff /> : <Eye />}
+          </Button>
+        }
+      />
+    );
+  },
+);
+PasswordField.displayName = "PasswordField";
 
 type FormErrorProps = {
   message?: string | null;
