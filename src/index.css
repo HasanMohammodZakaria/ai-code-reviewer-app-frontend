@@ -181,6 +181,10 @@
 
   --animate-menu-in: menu-in 150ms ease-out;
   --animate-menu-out: menu-out 100ms ease-in;
+  --animate-sheet-in: sheet-in 250ms ease-out;
+  --animate-sheet-out: sheet-out 200ms ease-in;
+  --animate-overlay-in: overlay-in 250ms ease-out;
+  --animate-overlay-out: overlay-out 200ms ease-in;
 
   @keyframes menu-in {
     from {
@@ -201,6 +205,42 @@
     to {
       opacity: 0;
       transform: scale(0.96);
+    }
+  }
+
+  @keyframes sheet-in {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes sheet-out {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes overlay-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes overlay-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
     }
   }
 }
