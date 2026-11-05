@@ -11,6 +11,7 @@ import { RegisterPage } from "../pages/register-page";
 import { ResetPasswordPage } from "../pages/reset-password-page";
 import { ProjectDetailPage } from "../pages/project-detail-page";
 import { ReviewDetailPage } from "../pages/review-detail-page";
+import { SettingsPage } from "../pages/settings-page";
 import { auth, guest } from "./auth";
 
 export const router = createBrowserRouter([
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
           { path: "/projects/new", element: <NewProjectPage /> },
           { path: "/projects/:id", element: <ProjectDetailPage /> },
           { path: "/reviews/:id", element: <ReviewDetailPage /> },
-          { path: "/settings", element: <PlaceholderPage title="Settings" /> },
+          { path: "/settings", element: <SettingsPage /> },
 
           // Teachers only
           {
