@@ -52,7 +52,7 @@ function ReviewRow({ review }: { review: ReviewListItem }) {
         </div>
 
         {review.summary ? (
-          <p className="mt-2 line-clamp-2 break-words text-sm text-muted-foreground">
+          <p className="mt-2 line-clamp-2 wrap-break-word text-sm text-muted-foreground">
             {review.summary}
           </p>
         ) : null}
