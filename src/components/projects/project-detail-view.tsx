@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useAuth } from "../../hooks/use-auth";
@@ -10,6 +11,8 @@ import { ErrorState } from "../common/error-state";
 import { ReviewHistory } from "../reviews/review-history";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
+import { DeleteProjectDialog } from "./delete-project-dialog";
+import { EditProjectDialog } from "./edit-project-dialog";
 import { FileViewer } from "./file-viewer";
 import { ProjectDetailHeader } from "./project-detail-header";
 import { RunReviewButton } from "./run-review-button";
@@ -45,12 +48,16 @@ function ProjectDetailContent({ project }: { project: Project }) {
   const { user } = useAuth();
   const flow = useRunReviewFlow(project._id);
   const canManage = isProjectOwner(project, user);
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
     <div className="space-y-6 sm:space-y-8">
       <ProjectDetailHeader
         project={project}
         actions={<RunReviewButton flow={flow} />}
+        onEdit={() => setEditOpen(true)}
+        onDelete={() => setDeleteOpen(true)}
       />
 
       {canManage ? <RunReviewStatus flow={flow} /> : null}
@@ -81,6 +88,21 @@ function ProjectDetailContent({ project }: { project: Project }) {
           }
         />
       </section>
+
+      {canManage ? (
+        <>
+          <EditProjectDialog
+            project={project}
+            open={editOpen}
+            onOpenChange={setEditOpen}
+          />
+          <DeleteProjectDialog
+            project={project}
+            open={deleteOpen}
+            onOpenChange={setDeleteOpen}
+          />
+        </>
+      ) : null}
     </div>
   );
 }
