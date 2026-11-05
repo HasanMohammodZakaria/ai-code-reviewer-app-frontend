@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { HomeRedirect } from "../components/auth/home-redirect";
 import { PlaceholderPage } from "../components/common/placeholder-page";
+import { LoginPage } from "../pages/login-page";
 import { auth, guest } from "./auth";
 
 export const router = createBrowserRouter([
@@ -10,7 +11,7 @@ export const router = createBrowserRouter([
   {
     element: guest(),
     children: [
-      { path: "/login", element: <PlaceholderPage title="Login" /> },
+      { path: "/login", element: <LoginPage /> },
       { path: "/register", element: <PlaceholderPage title="Register" /> },
       {
         path: "/forgot-password",
