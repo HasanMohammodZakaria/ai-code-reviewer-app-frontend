@@ -9,6 +9,7 @@ import * as authApi from "../api/auth";
 import { setAuthFailureHandler } from "../api/client";
 import { clearAccessToken, subscribeToken } from "../lib/token-store";
 import type { User } from "../types/user";
+import { queryClient } from "../lib/query-client";
 import {
   AuthContext,
   type AuthContextValue,
@@ -53,10 +54,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => setAuthFailureHandler(null);
   }, []);
 
-  /* If the token is cleared from anywhere else, drop the user too */
+  /* If the token is cleared from anywhere (logout, failed refresh, app load),
+     drop the user and the cached data, so the next user never sees it */
   useEffect(() => {
     return subscribeToken((token) => {
       if (token === null) {
+        queryClient.clear();
         setUserState(null);
         setStatus("unauthenticated");
       }
