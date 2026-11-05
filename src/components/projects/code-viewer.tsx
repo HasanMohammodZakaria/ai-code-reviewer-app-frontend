@@ -9,17 +9,20 @@ type CodeViewerProps = {
   language: string;
   /** Accessible name of the code area, e.g. the file path */
   label: string;
+  /** Turn off for a snippet that is not a whole file, e.g. a suggested fix */
+  showLineNumbers?: boolean;
   className?: string;
 };
 
 /**
- * Read-only code with line numbers, in JetBrains Mono. Long lines scroll
- * sideways inside the block, so the page itself never scrolls sideways.
+ * Read-only code with optional line numbers, in JetBrains Mono. Long lines
+ * scroll sideways inside the block, so the page itself never scrolls sideways.
  */
 export function CodeViewer({
   code,
   language,
   label,
+  showLineNumbers = true,
   className,
 }: CodeViewerProps) {
   // A final newline would show as one extra empty numbered line
@@ -57,13 +60,20 @@ export function CodeViewer({
           >
             {tokens.map((line, lineIndex) => (
               <div key={lineIndex} {...getLineProps({ line })} className="flex">
+                {showLineNumbers ? (
+                  <span
+                    aria-hidden="true"
+                    className="sticky left-0 w-14 shrink-0 select-none bg-background pr-4 text-right text-muted-foreground"
+                  >
+                    {lineIndex + 1}
+                  </span>
+                ) : null}
                 <span
-                  aria-hidden="true"
-                  className="sticky left-0 w-14 shrink-0 select-none bg-background pr-4 text-right text-muted-foreground"
+                  className={cn(
+                    "whitespace-pre pr-4",
+                    !showLineNumbers && "pl-4",
+                  )}
                 >
-                  {lineIndex + 1}
-                </span>
-                <span className="whitespace-pre pr-4">
                   {line.map((token, tokenIndex) => (
                     <span key={tokenIndex} {...getTokenProps({ token })} />
                   ))}
