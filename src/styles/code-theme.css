@@ -1,0 +1,29 @@
+/* Syntax colors for code blocks. Read by src/lib/code-highlight.ts.
+   Both modes are chosen for readable contrast on the page background,
+   which is where the code blocks sit (bg-background). */
+
+:root {
+  --code-plain: #0f172a;
+  --code-comment: #64748b;
+  --code-keyword: #4338ca;
+  --code-string: #047857;
+  --code-number: #b45309;
+  --code-function: #0369a1;
+  --code-class: #0f766e;
+  --code-operator: #475569;
+  --code-tag: #be123c;
+  --code-attr: #b45309;
+}
+
+.dark {
+  --code-plain: #e2e8f0;
+  --code-comment: #94a3b8;
+  --code-keyword: #a5b4fc;
+  --code-string: #6ee7b7;
+  --code-number: #fcd34d;
+  --code-function: #7dd3fc;
+  --code-class: #5eead4;
+  --code-operator: #cbd5e1;
+  --code-tag: #fda4af;
+  --code-attr: #fcd34d;
+}
