@@ -2,11 +2,12 @@ import { createBrowserRouter } from "react-router-dom";
 import { HomeRedirect } from "../components/auth/home-redirect";
 import { PlaceholderPage } from "../components/common/placeholder-page";
 import { AppShell } from "../components/layout/app-shell";
+import { DashboardPage } from "../pages/dashboard-page";
 import { ForgotPasswordPage } from "../pages/forgot-password-page";
 import { LoginPage } from "../pages/login-page";
+import { ProjectsPage } from "../pages/projects-page";
 import { RegisterPage } from "../pages/register-page";
 import { ResetPasswordPage } from "../pages/reset-password-page";
-import { DashboardPage } from "../pages/dashboard-page";
 import { auth, guest } from "./auth";
 
 export const router = createBrowserRouter([
@@ -32,14 +33,8 @@ export const router = createBrowserRouter([
         element: <AppShell />,
         children: [
           // Any logged-in user
-          {
-            path: "/dashboard",
-            element: <DashboardPage />,
-          },
-          {
-            path: "/projects",
-            element: <PlaceholderPage title="My projects" />,
-          },
+          { path: "/dashboard", element: <DashboardPage /> },
+          { path: "/projects", element: <ProjectsPage /> },
           {
             path: "/projects/new",
             element: <PlaceholderPage title="New project" />,
