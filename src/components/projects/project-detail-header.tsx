@@ -12,7 +12,7 @@ import {
 import { useAuth } from "../../hooks/use-auth";
 import { formatDate, pluralize } from "../../lib/format";
 import { getOwnerInfo, isProjectOwner } from "../../lib/project-owner";
-import { ROUTES } from "../../lib/routes";
+import { ROUTES, studentPath } from "../../lib/routes";
 import type { Project } from "../../types/project";
 import { PageHeader } from "../common/page-header";
 import { Button } from "../ui/button";
@@ -38,13 +38,18 @@ export function ProjectDetailHeader({
   const { user } = useAuth();
   const canManage = isProjectOwner(project, user);
   const owner = getOwnerInfo(project);
+  // A teacher reading a student's project goes back to that student, not to /projects
+  const backToStudent =
+    user?.role === "teacher" && !canManage && owner !== null;
+  const backTo = backToStudent ? studentPath(owner._id) : ROUTES.projects;
+  const backLabel = backToStudent ? owner.fullName : "Projects";
 
   return (
     <div className="space-y-4">
       <Button asChild variant="ghost" size="sm" className="-ml-2">
-        <Link to={ROUTES.projects}>
+        <Link to={backTo}>
           <ArrowLeft />
-          Projects
+          {backLabel}
         </Link>
       </Button>
 

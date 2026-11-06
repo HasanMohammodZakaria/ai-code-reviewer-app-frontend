@@ -6,12 +6,16 @@ import { DashboardPage } from "../pages/dashboard-page";
 import { ForgotPasswordPage } from "../pages/forgot-password-page";
 import { LoginPage } from "../pages/login-page";
 import { NewProjectPage } from "../pages/new-project-page";
+import { ProjectDetailPage } from "../pages/project-detail-page";
 import { ProjectsPage } from "../pages/projects-page";
 import { RegisterPage } from "../pages/register-page";
 import { ResetPasswordPage } from "../pages/reset-password-page";
-import { ProjectDetailPage } from "../pages/project-detail-page";
 import { ReviewDetailPage } from "../pages/review-detail-page";
 import { SettingsPage } from "../pages/settings-page";
+import { TeacherComparePage } from "../pages/teacher-compare-page";
+import { TeacherOverviewPage } from "../pages/teacher-overview-page";
+import { TeacherStudentDetailPage } from "../pages/teacher-student-detail-page";
+import { TeacherStudentsPage } from "../pages/teacher-students-page";
 import { auth, guest } from "./auth";
 
 export const router = createBrowserRouter([
@@ -48,22 +52,13 @@ export const router = createBrowserRouter([
           {
             element: auth({ role: "teacher" }),
             children: [
-              {
-                path: "/teacher",
-                element: <PlaceholderPage title="Teacher overview" />,
-              },
-              {
-                path: "/teacher/students",
-                element: <PlaceholderPage title="Students" />,
-              },
+              { path: "/teacher", element: <TeacherOverviewPage /> },
+              { path: "/teacher/students", element: <TeacherStudentsPage /> },
               {
                 path: "/teacher/students/:id",
-                element: <PlaceholderPage title="Student detail" />,
+                element: <TeacherStudentDetailPage />,
               },
-              {
-                path: "/teacher/compare",
-                element: <PlaceholderPage title="Compare" />,
-              },
+              { path: "/teacher/compare", element: <TeacherComparePage /> },
             ],
           },
         ],
