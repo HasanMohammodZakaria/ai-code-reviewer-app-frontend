@@ -1,4 +1,5 @@
 import { api, refreshSession } from "./client";
+import { prepareProfileImage } from "../lib/image";
 import { setAccessToken } from "../lib/token-store";
 import type { ApiSuccess, AuthResponse, UserResponse } from "../types/api";
 
@@ -29,18 +30,22 @@ export type ResetPasswordInput = {
   password: string;
 };
 
+/** With a photo, the server also uploads it to an image host first, which can be slow */
+const IMAGE_REQUEST_TIMEOUT_MS = 90_000;
+
 export async function register(input: RegisterInput): Promise<AuthResponse> {
   const form = new FormData();
   form.append("fullName", input.fullName);
   form.append("email", input.email);
   form.append("password", input.password);
   if (input.image) {
-    form.append("image", input.image);
+    form.append("image", await prepareProfileImage(input.image));
   }
 
   const response = await api.post<ApiSuccess<AuthResponse>>(
     "/auth/register",
     form,
+    input.image ? { timeout: IMAGE_REQUEST_TIMEOUT_MS } : undefined,
   );
   setAccessToken(response.data.data.accessToken);
   return response.data.data;
@@ -89,10 +94,14 @@ export async function updateProfile(
     form.append("fullName", input.fullName);
   }
   if (input.image) {
-    form.append("image", input.image);
+    form.append("image", await prepareProfileImage(input.image));
   }
 
-  const response = await api.patch<ApiSuccess<UserResponse>>("/auth/me", form);
+  const response = await api.patch<ApiSuccess<UserResponse>>(
+    "/auth/me",
+    form,
+    input.image ? { timeout: IMAGE_REQUEST_TIMEOUT_MS } : undefined,
+  );
   return response.data.data.user;
 }
 
