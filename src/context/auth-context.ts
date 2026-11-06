@@ -10,6 +10,8 @@ export type AuthContextValue = {
   /** "loading" until the first refresh on app load has finished */
   status: AuthStatus;
   login: (input: LoginInput) => Promise<User>;
+  /** Log in with the Google ID token from Google's sign-in button */
+  loginWithGoogle: (idToken: string) => Promise<User>;
   register: (input: RegisterInput) => Promise<User>;
   /** Always clears local state, even if the server request fails */
   logout: () => Promise<void>;

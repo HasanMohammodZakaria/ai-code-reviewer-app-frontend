@@ -4,10 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { getFieldErrors, normalizeError } from "../../api/errors";
 import { useAuth } from "../../hooks/use-auth";
+import { isGoogleEnabled } from "../../lib/google";
 import { ROUTES, getHomePath } from "../../lib/routes";
 import { loginSchema, type LoginValues } from "../../lib/schemas/auth";
+import type { NormalizedError } from "../../types/api";
 import { FormError, PasswordField, TextField } from "../common/form-controls";
 import { Button } from "../ui/button";
+import { GoogleButton } from "./google-button";
 
 const RATE_LIMIT_COOLDOWN_MS = 60_000;
 
@@ -30,7 +33,7 @@ export function LoginForm() {
     defaultValues: { email: "", password: "" },
   });
 
-  /* After a 429 the button stays disabled for a while; no auto-retry */
+  /* After a 429 the buttons stay disabled for a while; no auto-retry */
   useEffect(() => {
     if (!rateLimited) return;
     const timer = window.setTimeout(
@@ -68,6 +71,13 @@ export function LoginForm() {
     }
   });
 
+  function handleGoogleError(error: NormalizedError) {
+    setFormError(error.message);
+    if (error.status === 429) {
+      setRateLimited(true);
+    }
+  }
+
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
       <FormError message={formError} />
@@ -101,6 +111,21 @@ export function LoginForm() {
       >
         {isSubmitting ? "Logging in..." : "Log in"}
       </Button>
+
+      {isGoogleEnabled ? (
+        <>
+          <div className="flex items-center gap-3" aria-hidden="true">
+            <span className="h-px flex-1 bg-border" />
+            <span className="text-xs text-muted-foreground">or</span>
+            <span className="h-px flex-1 bg-border" />
+          </div>
+
+          <GoogleButton
+            onError={handleGoogleError}
+            disabled={rateLimited || isSubmitting}
+          />
+        </>
+      ) : null}
 
       <p className="text-center text-sm text-muted-foreground">
         New here?{" "}

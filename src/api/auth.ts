@@ -55,6 +55,18 @@ export async function login(input: LoginInput): Promise<AuthResponse> {
   return response.data.data;
 }
 
+/**
+ * Log in with a Google ID token (the `credential` from Google's sign-in button).
+ * Google users are always students. Returns { user, accessToken }.
+ */
+export async function googleLogin(idToken: string): Promise<AuthResponse> {
+  const response = await api.post<ApiSuccess<AuthResponse>>("/auth/google", {
+    idToken,
+  });
+  setAccessToken(response.data.data.accessToken);
+  return response.data.data;
+}
+
 /** Used on app load. Shares the single-flight promise from client.ts */
 export function refresh(): Promise<AuthResponse> {
   return refreshSession();

@@ -7,9 +7,9 @@ import {
 } from "react";
 import * as authApi from "../api/auth";
 import { setAuthFailureHandler } from "../api/client";
+import { queryClient } from "../lib/query-client";
 import { clearAccessToken, subscribeToken } from "../lib/token-store";
 import type { User } from "../types/user";
-import { queryClient } from "../lib/query-client";
 import {
   AuthContext,
   type AuthContextValue,
@@ -73,6 +73,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return loggedIn;
   }, []);
 
+  const loginWithGoogle = useCallback(async (idToken: string) => {
+    const { user: loggedIn } = await authApi.googleLogin(idToken);
+    setUserState(loggedIn);
+    setStatus("authenticated");
+    return loggedIn;
+  }, []);
+
   const register = useCallback(async (input: authApi.RegisterInput) => {
     const { user: created } = await authApi.register(input);
     setUserState(created);
@@ -97,8 +104,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, status, login, register, logout, setUser }),
-    [user, status, login, register, logout, setUser],
+    () => ({ user, status, login, loginWithGoogle, register, logout, setUser }),
+    [user, status, login, loginWithGoogle, register, logout, setUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
