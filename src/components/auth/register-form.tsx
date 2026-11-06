@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  logout as logoutRequest,
+  register as registerRequest,
+} from "../../api/auth";
 import { getFieldErrors, normalizeError } from "../../api/errors";
-import { useAuth } from "../../hooks/use-auth";
-import { ROUTES, getHomePath } from "../../lib/routes";
+import { createRegisteredState } from "../../lib/register-redirect";
+import { ROUTES } from "../../lib/routes";
 import { registerSchema, type RegisterValues } from "../../lib/schemas/auth";
+import { clearAccessToken } from "../../lib/token-store";
 import { FormError, PasswordField, TextField } from "../common/form-controls";
 import { Button } from "../ui/button";
 
@@ -15,7 +20,6 @@ const linkClass =
   "rounded-sm text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40";
 
 export function RegisterForm() {
-  const { register: registerUser } = useAuth();
   const navigate = useNavigate();
   const [formError, setFormError] = useState<string | null>(null);
   const [rateLimited, setRateLimited] = useState(false);
@@ -51,13 +55,28 @@ export function RegisterForm() {
     setFormError(null);
 
     try {
-      const user = await registerUser({
+      await registerRequest({
         fullName: values.fullName,
         email: values.email,
         password: values.password,
         image: values.image,
       });
-      navigate(getHomePath(user.role), { replace: true });
+
+      /* The server logs a new user in. Here a new user logs in on purpose,
+         so end that session and send them to the login page. The auth
+         context was never told about it, so no guard redirects in between. */
+      try {
+        await logoutRequest();
+      } catch {
+        // The account exists; the user still goes on to the login page
+      } finally {
+        clearAccessToken();
+      }
+
+      navigate(ROUTES.login, {
+        replace: true,
+        state: createRegisteredState(values.email),
+      });
     } catch (error) {
       const normalized = normalizeError(error);
 

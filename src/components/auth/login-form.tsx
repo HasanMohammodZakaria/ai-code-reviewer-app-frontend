@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { CircleCheck } from "lucide-react";
 import { getFieldErrors, normalizeError } from "../../api/errors";
 import { useAuth } from "../../hooks/use-auth";
 import { isGoogleEnabled } from "../../lib/google";
+import { readRegisteredEmail } from "../../lib/register-redirect";
 import { ROUTES, getHomePath } from "../../lib/routes";
 import { loginSchema, type LoginValues } from "../../lib/schemas/auth";
 import type { NormalizedError } from "../../types/api";
@@ -20,6 +22,10 @@ const linkClass =
 export function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { state } = useLocation();
+  // Set only when the user has just created an account (see register-form)
+  const registeredEmail = readRegisteredEmail(state);
+
   const [formError, setFormError] = useState<string | null>(null);
   const [rateLimited, setRateLimited] = useState(false);
 
@@ -30,7 +36,7 @@ export function LoginForm() {
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: registeredEmail ?? "", password: "" },
   });
 
   /* After a 429 the buttons stay disabled for a while; no auto-retry */
@@ -78,8 +84,23 @@ export function LoginForm() {
     }
   }
 
+  const showCreatedNotice = registeredEmail !== null && formError === null;
+
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-4">
+      {showCreatedNotice ? (
+        <div
+          role="status"
+          className="flex items-start gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+        >
+          <CircleCheck
+            className="mt-0.5 size-4 shrink-0 text-success"
+            aria-hidden="true"
+          />
+          <p>Account created. Log in to continue.</p>
+        </div>
+      ) : null}
+
       <FormError message={formError} />
 
       <TextField
@@ -94,6 +115,8 @@ export function LoginForm() {
       <PasswordField
         label="Password"
         autoComplete="current-password"
+        // After registering the email is already filled in, so start at the password
+        autoFocus={registeredEmail !== null}
         error={errors.password?.message}
         {...register("password")}
       />
