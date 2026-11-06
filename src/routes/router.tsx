@@ -1,7 +1,8 @@
+import type { ComponentType } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import { HomeRedirect } from "../components/auth/home-redirect";
 import { RouteErrorView } from "../components/common/route-error-view";
 import { AppShell } from "../components/layout/app-shell";
+import { PublicLayout } from "../components/layout/public-layout";
 import { RootLayout } from "../components/layout/root-layout";
 import { auth, guest } from "./auth";
 
@@ -10,10 +11,10 @@ import { auth, guest } from "./auth";
  * page does not download the charts and the code highlighter.
  */
 const page =
-  (load: () => Promise<Record<string, React.ComponentType>>, name: string) =>
+  (load: () => Promise<Record<string, ComponentType>>, name: string) =>
   async () => {
-    const module = await load();
-    return { Component: module[name] };
+    const loaded = await load();
+    return { Component: loaded[name] };
   };
 
 export const router = createBrowserRouter([
@@ -22,9 +23,18 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <RouteErrorView />,
     children: [
-      { path: "/", element: <HomeRedirect /> },
+      // Landing page: public for everyone, logged in or not
+      {
+        element: <PublicLayout />,
+        children: [
+          {
+            path: "/",
+            lazy: page(() => import("../pages/landing-page"), "LandingPage"),
+          },
+        ],
+      },
 
-      // Public pages: logged-in users are sent to their home
+      // Auth pages: logged-in users are sent to their home
       {
         element: guest(),
         children: [

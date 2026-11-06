@@ -15,7 +15,7 @@ export function AuthLayout({ title, description, children }: AuthLayoutProps) {
     <div className="flex min-h-svh flex-col bg-background text-foreground">
       <header className="flex items-center justify-between px-4 py-3 sm:px-6">
         <Link
-          to={ROUTES.login}
+          to={ROUTES.landing}
           className="rounded-md text-lg font-semibold tracking-tight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
         >
           <span className="text-primary">AI</span> Code Reviewer
