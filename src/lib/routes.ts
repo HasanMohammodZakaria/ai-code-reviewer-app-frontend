@@ -1,6 +1,9 @@
 import type { UserRole } from "../types/user";
 
 export const ROUTES = {
+  /** The public landing page */
+  landing: "/",
+
   login: "/login",
   register: "/register",
   forgotPassword: "/forgot-password",

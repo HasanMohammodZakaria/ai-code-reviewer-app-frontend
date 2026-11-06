@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, LogOut, Settings } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import { useAuth } from "../../hooks/use-auth";
-import { ROUTES } from "../../lib/routes";
+import { ROUTES, getHomePath } from "../../lib/routes";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -38,7 +38,9 @@ export function UserMenu() {
     queryClient.clear();
   };
 
-  const roleLabel = user.role === "teacher" ? "Teacher" : "Student";
+  const isTeacher = user.role === "teacher";
+  const roleLabel = isTeacher ? "Teacher" : "Student";
+  const dashboardLabel = isTeacher ? "Teacher dashboard" : "Student dashboard";
 
   return (
     <DropdownMenu>
@@ -75,6 +77,13 @@ export function UserMenu() {
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild>
+          <Link to={getHomePath(user.role)}>
+            <LayoutDashboard aria-hidden="true" />
+            {dashboardLabel}
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
           <Link to={ROUTES.settings}>
